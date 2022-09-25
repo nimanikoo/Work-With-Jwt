@@ -11,7 +11,6 @@ using Work_With_Jwt.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 //Add DbContext to project
@@ -24,11 +23,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-
     //Add Configs for Autorization 
-    options.AddSecurityDefinition("Oauth2:", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
-        Description = "Standard Authorization Header Using the Bearer Scheme: (\"bearer {token}\")",
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
@@ -51,9 +49,9 @@ builder.Services.AddAuthentication(
             .GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
-
         };
     });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

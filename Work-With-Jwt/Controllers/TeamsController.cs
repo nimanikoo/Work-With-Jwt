@@ -6,7 +6,7 @@ using System.Data;
 using Work_With_Jwt.Data;
 using Work_With_Jwt.Services.Interfaces;
 
-namespace Authentication_with_Jwt.Controllers;
+namespace Work_With_Jwt.Controllers;
 
 [Route("api/[controller]")] // api/teams
 [ApiController]
@@ -19,14 +19,14 @@ public class TeamsController : ControllerBase
         _context = context;
     }
 
-    [HttpGet, Authorize(Roles = "Manager")]
+    [HttpGet(Name ="getTest"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> Get()
     {
         var teams = await _context.Teams.ToListAsync();
         return Ok(teams);
     }
 
-    [HttpGet("{id:int}"), Authorize(Roles = "Manager")]
+    [HttpGet("{id:int}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetById(int id)
     {
         var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
@@ -37,7 +37,7 @@ public class TeamsController : ControllerBase
         return Ok(team);
     }
 
-    [HttpPost, Authorize(Roles = "Manager")]
+    [HttpPost, Authorize(Roles = "Admin")]
     public async Task<IActionResult> Post(Team team)
     {
         await _context.Teams.AddAsync(team);
@@ -46,7 +46,7 @@ public class TeamsController : ControllerBase
         return CreatedAtAction("Get", team.Id, team);
     }
 
-    [HttpPatch, Authorize(Roles = "Manager")]
+    [HttpPatch, Authorize(Roles = "Admin")]
     public async Task<IActionResult> Patch(int id, string country)
     {
         var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
@@ -61,7 +61,7 @@ public class TeamsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete, Authorize(Roles = "Manager")]
+    [HttpDelete, Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);

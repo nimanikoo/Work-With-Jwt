@@ -18,19 +18,20 @@ namespace Work_With_Jwt.Services
         {
             List<Claim> claims = new List<Claim>
              {
-                new Claim(ClaimTypes.Name,user.Username),
-                new Claim(ClaimTypes.Role,"Manager")
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, "Admin")
              };
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+            var tokenKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
                 _configuration.GetSection("Jwt:Key").Value));
 
-            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var tokenCredential = new SigningCredentials(tokenKey, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(120),
-                signingCredentials: credential);
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: tokenCredential
+                );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 

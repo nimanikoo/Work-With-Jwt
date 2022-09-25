@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Work_With_Jwt.Data.Dtos;
 using Work_With_Jwt.Models;
@@ -21,6 +22,14 @@ namespace Work_With_Jwt.Controllers
 
         }
 
+        [HttpGet,Authorize]
+        public ActionResult<string> GetName()
+        {
+            var userName = User?.Identity?.Name;
+            return Ok(userName);   
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         [Route("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
@@ -49,8 +58,8 @@ namespace Work_With_Jwt.Controllers
             }
 
             string token = _tokenService.CreateToken(user);
+            if(token == null) { return Unauthorized(); }
             return Ok(token);
-
         }
     }
 }
