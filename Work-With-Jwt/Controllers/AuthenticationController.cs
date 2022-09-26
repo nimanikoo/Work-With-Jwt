@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Work_With_Jwt.Data.Dtos;
 using Work_With_Jwt.Models;
@@ -22,11 +21,11 @@ namespace Work_With_Jwt.Controllers
 
         }
 
-        [HttpGet,Authorize]
+        [HttpGet, Authorize]
         public ActionResult<string> GetName()
         {
-            var userName = User?.Identity?.Name;
-            return Ok(userName);   
+            var userName = _userServices.GetUsersName();
+            return Ok(userName);
         }
 
         [AllowAnonymous]
@@ -58,7 +57,30 @@ namespace Work_With_Jwt.Controllers
             }
 
             string token = _tokenService.CreateToken(user);
-            if(token == null) { return Unauthorized(); }
+            if (token == null) { return Unauthorized(); }
+
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            _tokenService.SetRefreshToken(refreshToken, user);
+
+            return Ok(token);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return Unauthorized("Invalid Refresh Token... !");
+            }
+            else if (user.TokenExpiresTime < DateTime.Now)
+            {
+                return Unauthorized("Token Expired...!");
+            }
+            var token = _tokenService.CreateToken(user);
+            var NewrefreshToken = _tokenService.GenerateRefreshToken();
+            _tokenService.SetRefreshToken(NewrefreshToken,user);
+
             return Ok(token);
         }
     }

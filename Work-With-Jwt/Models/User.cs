@@ -6,5 +6,8 @@
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
 
+        public string RefreshToken { get; set; }
+        public DateTime TokenCreationTime { get; set; }
+        public DateTime TokenExpiresTime { get; set; }
     }
 }

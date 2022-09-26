@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
+builder.Services.AddHttpContextAccessor();
 //Add DbContext to project
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -36,7 +36,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 //Add Services and Intefaces
-builder.Services.AddScoped<IUserServices, PasswordService>();
+builder.Services.AddScoped<IUserServices, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddAuthentication(
